@@ -50,11 +50,24 @@ app.add_middleware(
 
 # Directories setup
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
-DB_PATH = os.path.join(BASE_DIR, "db.json")
 
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+if os.environ.get("VERCEL"):
+    UPLOAD_DIR = "/tmp/uploads"
+    DB_PATH = "/tmp/db.json"
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+    # Copy seed db.json to /tmp if not exists
+    src_db = os.path.join(BASE_DIR, "db.json")
+    if not os.path.exists(DB_PATH) and os.path.exists(src_db):
+        try:
+            shutil.copy(src_db, DB_PATH)
+        except Exception as e:
+            print(f"Failed to copy db.json to /tmp: {e}")
+else:
+    UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+    DB_PATH = os.path.join(BASE_DIR, "db.json")
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 os.makedirs(STATIC_DIR, exist_ok=True)
 
 # Global in-memory data registries
