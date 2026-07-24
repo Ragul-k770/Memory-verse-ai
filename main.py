@@ -68,7 +68,10 @@ else:
     DB_PATH = os.path.join(BASE_DIR, "db.json")
     os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-os.makedirs(STATIC_DIR, exist_ok=True)
+try:
+    os.makedirs(STATIC_DIR, exist_ok=True)
+except Exception as e:
+    print(f"Skipping static dir creation on read-only filesystem: {e}")
 
 # Global in-memory data registries
 document_registry = {}
