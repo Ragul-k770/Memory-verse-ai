@@ -1,0 +1,17 @@
+# Environment variables & secrets
+.env
+
+# Python cache & bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Uploaded files
+uploads/*
+!uploads/.gitkeep
+
+# IDE & OS files
+.DS_Store
+.vscode/
+.idea/

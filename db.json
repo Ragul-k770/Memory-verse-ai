@@ -1,0 +1,87 @@
+{
+    "seed-1": {
+        "id": "seed-1",
+        "filename": "Alex_Dev_Resume.txt",
+        "title": "Alex Dev Resume",
+        "category": "Academics",
+        "year": 2026,
+        "organization": "Technology",
+        "skills": [
+            "Python",
+            "JavaScript",
+            "React",
+            "FastAPI",
+            "SQL",
+            "Git",
+            "Docker",
+            "Machine Learning",
+            "NLP",
+            "RAG",
+            "Vector Database",
+            "API"
+        ],
+        "size": 641
+    },
+    "seed-2": {
+        "id": "seed-2",
+        "filename": "Google_Internship_Letter.txt",
+        "title": "Google Internship Letter",
+        "category": "Internships",
+        "year": 2025,
+        "organization": "Google LLC",
+        "skills": [
+            "Python",
+            "FastAPI",
+            "RAG",
+            "Vector Database",
+            "API"
+        ],
+        "size": 557
+    },
+    "seed-3": {
+        "id": "seed-3",
+        "filename": "MemoryVerse_AI_Project_Report.txt",
+        "title": "Memoryverse Ai Project Report",
+        "category": "Projects",
+        "year": 2026,
+        "organization": "Unknown",
+        "skills": [
+            "React",
+            "FastAPI",
+            "Git",
+            "NLP",
+            "RAG",
+            "CSS",
+            "API"
+        ],
+        "size": 783
+    },
+    "seed-4": {
+        "id": "seed-4",
+        "filename": "Coursera_Python_Certification.txt",
+        "title": "Coursera Python Certification",
+        "category": "Certifications",
+        "year": 2023,
+        "organization": "Course Completion\nCourse",
+        "skills": [
+            "Python",
+            "NumPy",
+            "Pandas",
+            "Data Analysis"
+        ],
+        "size": 361
+    },
+    "seed-5": {
+        "id": "seed-5",
+        "filename": "Hackathon_Winner_Certificate.txt",
+        "title": "Hackathon Winner Certificate",
+        "category": "Certifications",
+        "year": 2024,
+        "organization": "Technology Hackathon held in October",
+        "skills": [
+            "TensorFlow",
+            "Deep Learning"
+        ],
+        "size": 411
+    }
+}

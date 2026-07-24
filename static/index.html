@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemoryVerse AI - Digital Identity Knowledge Repository</title>
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+    <!-- Login Screen Overlay -->
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card glass-card">
+            <div class="login-brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-brain-circuit neon-icon"></i>
+                </div>
+                <h2>MemoryVerse AI</h2>
+                <p>Secure Access to your Digital Identity</p>
+            </div>
+
+            <!-- Login Tabs -->
+            <div class="login-tabs">
+                <button class="login-tab-btn active" id="login-tab-google" onclick="switchLoginMethod('google')">
+                    <i class="fa-brands fa-google"></i> Google Sign-In
+                </button>
+                <button class="login-tab-btn" id="login-tab-phone" onclick="switchLoginMethod('phone')">
+                    <i class="fa-solid fa-mobile-screen-button"></i> Mobile OTP
+                </button>
+            </div>
+
+            <!-- Panel: Google -->
+            <div id="login-panel-google" class="login-panel active">
+
+                <!-- Step 1: Email Input -->
+                <div id="google-step-email">
+                    <p class="login-desc">Enter your Google account email to continue.</p>
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope input-icon"></i>
+                        <input type="email" id="google-email-input" placeholder="Enter your Gmail address">
+                    </div>
+                    <button class="btn btn-google" id="google-email-next-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-logo">
+                        <span>Next</span>
+                    </button>
+                    <p class="google-hint">Example: yourname@gmail.com</p>
+                    <div id="google-gsi-divider" style="display:none; margin: 15px 0; text-align: center; color: var(--text-muted); font-size: 0.8rem;">— OR —</div>
+                    <div id="google-gsi-container" style="display:flex; justify-content:center;"></div>
+                </div>
+
+                <!-- Step 2: Password Input (shown after email) -->
+                <div id="google-step-password" style="display:none;">
+                    <div class="google-account-pill" id="google-account-pill">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="G" class="google-logo-sm">
+                        <span id="google-email-display">user@gmail.com</span>
+                        <i class="fa-solid fa-chevron-down" style="margin-left:4px;font-size:0.7rem;"></i>
+                    </div>
+                    <p class="login-desc" style="margin-top:12px;">Enter your password to sign in.</p>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock input-icon"></i>
+                        <input type="password" id="google-password-input" placeholder="Enter your password" minlength="6">
+                        <i class="fa-solid fa-eye toggle-password" id="toggle-pw-icon" onclick="toggleGooglePassword()"></i>
+                    </div>
+                    <button class="btn btn-primary btn-full-width" id="google-signin-btn">
+                        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                    </button>
+                    <p class="google-hint" id="google-error-msg" style="color:var(--magenta);display:none;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Incorrect password. Please try again.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Panel: Phone -->
+            <div id="login-panel-phone" class="login-panel">
+                <p class="login-desc">Enter your mobile number to receive a secure one-time passcode (OTP).</p>
+                
+                <div class="input-group">
+                    <i class="fa-solid fa-phone input-icon"></i>
+                    <input type="tel" id="login-phone" placeholder="Enter Mobile Number (e.g. +91 98765 43210)">
+                </div>
+
+                <!-- OTP verification block (hidden initially) -->
+                <div id="otp-verification-container" class="otp-verification-container" style="display: none;">
+                    <p class="otp-instruction">We've sent a 4-digit code. Please enter it below:</p>
+                    <div class="otp-inputs">
+                        <input type="text" class="otp-digit" maxlength="1" id="otp-1" onkeyup="moveOtpFocus(this, 'otp-2', '')">
+                        <input type="text" class="otp-digit" maxlength="1" id="otp-2" onkeyup="moveOtpFocus(this, 'otp-3', 'otp-1')">
+                        <input type="text" class="otp-digit" maxlength="1" id="otp-3" onkeyup="moveOtpFocus(this, 'otp-4', 'otp-2')">
+                        <input type="text" class="otp-digit" maxlength="1" id="otp-4" onkeyup="moveOtpFocus(this, '', 'otp-3')">
+                    </div>
+                    <p class="otp-timer">Resend OTP in <span id="otp-timer-seconds">30</span>s</p>
+                </div>
+
+                <button class="btn btn-primary btn-full-width" id="phone-submit-btn">
+                    <i class="fa-solid fa-paper-plane"></i> Send Verification Code
+                </button>
+            </div>
+
+            <!-- Loader / Syncing screen -->
+            <div id="login-syncing" class="login-syncing" style="display: none;">
+                <div class="sync-spinner">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                </div>
+                <h3>Syncing Identity Nodes</h3>
+                <p id="syncing-subtext">Ingesting achievements, mapping skill vectors...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fa-solid fa-brain-circuit neon-icon"></i>
+                </div>
+                <div class="brand-info">
+                    <h1>MemoryVerse</h1>
+                    <span>AI Digital Identity</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="ingest">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span>AI Ingestion</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="timeline">
+                    <i class="fa-solid fa-timeline"></i>
+                    <span>Journey Timeline</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="relations">
+                    <i class="fa-solid fa-circle-nodes"></i>
+                    <span>Relation Graph</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="chat">
+                    <i class="fa-solid fa-comments"></i>
+                    <span>Smart Assistant</span>
+                </a>
+            </nav>
+
+            <div class="user-profile">
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                </div>
+                <div class="profile-details-wrapper">
+                    <div class="profile-details">
+                        <p class="profile-name" id="user-profile-name">Alex Dev</p>
+                        <p class="profile-role" id="user-profile-role">Student / AI Engineer</p>
+                    </div>
+                    <button class="btn-signout" id="signout-btn" title="Sign Out">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <div class="header-search">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="global-search-input" placeholder="Search anything in your journey... (e.g. Python, Google)">
+                </div>
+                <div class="header-actions">
+                    <div class="notification-badge" id="notif-bell" onclick="toggleNotifications()">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="pulse-dot" id="notif-pulse"></span>
+                        <!-- Notification Dropdown -->
+                        <div class="notif-dropdown" id="notif-dropdown">
+                            <div class="notif-header">
+                                <span>Notifications</span>
+                                <button onclick="clearNotifications(event)">Clear all</button>
+                            </div>
+                            <div class="notif-list" id="notif-list">
+                                <div class="notif-empty"><i class="fa-solid fa-check-circle"></i> All caught up!</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sys-status">
+                        <span class="status-dot online"></span>
+                        <span>AI Engine Active</span>
+                    </div>
+                    <div class="header-user-profile">
+                        <div class="header-profile-avatar">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                        </div>
+                        <span class="header-profile-name" id="header-user-profile-name">Alex Dev</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tab: Dashboard -->
+            <section id="dashboard" class="tab-pane active">
+                <div class="section-title">
+                    <h2>Knowledge Analytics Dashboard</h2>
+                    <p>Overview of your structured growth, achievements, and document metrics.</p>
+                </div>
+
+                <!-- Stats Overview Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fa-solid fa-file-invoice"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-docs">0</h3>
+                            <p>Total Documents</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                            <span>Synced</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-certs">0</h3>
+                            <p>Certifications</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                            <span>Verified</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon cyan">
+                            <i class="fa-solid fa-code-fork"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-projects">0</h3>
+                            <p>Projects & Skills</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fa-solid fa-link"></i>
+                            <span>Mapped</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <i class="fa-solid fa-business-time"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="stat-total-interns">0</h3>
+                            <p>Work Milestones</p>
+                        </div>
+                        <div class="stat-trend positive">
+                            <i class="fa-solid fa-arrow-trend-up"></i>
+                            <span>Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Dashboard Panels -->
+                <div class="dashboard-panels">
+                    <!-- Left: Recent Documents and Categories -->
+                    <div class="panel-column-large">
+                        <div class="glass-card">
+                            <div class="card-header">
+                                <h3>Ingested Professional Repository</h3>
+                                <div class="card-action">
+                                    <button class="btn btn-primary btn-sm" onclick="switchTab('ingest')">
+                                        <i class="fa-solid fa-upload"></i> Upload File
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Document Name</th>
+                                            <th>Category</th>
+                                            <th>Organization</th>
+                                            <th>Year</th>
+                                            <th>Extracted Skills</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="document-table-body">
+                                        <!-- Document rows injected here by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Knowledge Breakdown -->
+                    <div class="panel-column-small">
+                        <div class="glass-card">
+                            <div class="card-header">
+                                <h3>Category Distribution</h3>
+                            </div>
+                            <div class="category-breakdown" id="category-breakdown-list">
+                                <!-- Categories injected here -->
+                            </div>
+                        </div>
+
+                        <div class="glass-card skill-cloud-card">
+                            <div class="card-header">
+                                <h3>Extracted Skill Cloud</h3>
+                            </div>
+                            <div class="skill-cloud" id="extracted-skill-cloud">
+                                <!-- Skills injected here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Ingestion Dropzone -->
+            <section id="ingest" class="tab-pane">
+                <div class="section-title">
+                    <h2>AI Data Ingestion Hub</h2>
+                    <p>Upload Certificates, Resumes, Project Reports, or Internship Letters. Our NLP engine classifies and structures them in real-time.</p>
+                </div>
+
+                <div class="ingest-wrapper">
+                    <div class="glass-card upload-zone-card">
+                        <div class="upload-dropzone" id="file-dropzone">
+                            <input type="file" id="file-input" multiple accept=".pdf,.txt,.docx" style="display: none;">
+                            <div class="dropzone-content">
+                                <div class="upload-icon-pulse">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <h3>Drag & Drop Files Here</h3>
+                                <p>Supports PDF, DOCX, and TXT files (Max 15MB)</p>
+                                <button class="btn btn-secondary" id="browse-btn">
+                                    <i class="fa-regular fa-folder-open"></i> Browse Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card upload-queue-card">
+                        <div class="card-header">
+                            <h3>Ingestion Processing Queue</h3>
+                        </div>
+                        <div class="queue-list" id="upload-queue-list">
+                            <div class="empty-state">
+                                <i class="fa-solid fa-hourglass-empty"></i>
+                                <p>No uploads in progress. Drag files above to start extraction.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Journey Timeline -->
+            <section id="timeline" class="tab-pane">
+                <div class="section-title">
+                    <h2>Digital Journey Timeline</h2>
+                    <p>A visual, chronological map of your professional growth and milestone accomplishments.</p>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-line"></div>
+                    <div id="timeline-events-list">
+                        <!-- Timeline cards injected by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Relationship Graph -->
+            <section id="relations" class="tab-pane">
+                <div class="section-title">
+                    <h2>Knowledge Connections Engine</h2>
+                    <p>AI-mapped networks linking your certificates, projects, internships, and core skills together.</p>
+                </div>
+
+                <div class="graph-layout">
+                    <div class="glass-card graph-display-card">
+                        <div class="graph-legend">
+                            <div class="legend-item"><span class="legend-dot color-cat"></span> Category</div>
+                            <div class="legend-item"><span class="legend-dot color-doc"></span> Document</div>
+                            <div class="legend-item"><span class="legend-dot color-skill"></span> Skill</div>
+                        </div>
+                        <!-- Canvas container for relationship graph -->
+                        <div class="canvas-container">
+                            <canvas id="relation-canvas"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-card graph-details-card">
+                        <div class="card-header">
+                            <h3>Connection Details</h3>
+                        </div>
+                        <div id="graph-details-content">
+                            <div class="empty-state-side">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <p>Click a node in the network to inspect its relationships and metadata connections.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: AI Chat Assistant -->
+            <section id="chat" class="tab-pane">
+                <div class="section-title">
+                    <h2>Smart Retrieval Assistant (RAG)</h2>
+                    <p>Ask natural questions to instantly query your digital footprint. MemoryVerse retrieves matching evidence from original documents and synthesizes an answer.</p>
+                </div>
+
+                <div class="chat-layout">
+                    <!-- Left: Semantic search engine -->
+                    <div class="chat-search-panel">
+                        <div class="glass-card fill-height">
+                            <div class="card-header">
+                                <h3>Vector Similarity Search</h3>
+                            </div>
+                            <div class="search-input-wrapper">
+                                <input type="text" id="semantic-search-input" placeholder="Query vector database (e.g. Python RAG)...">
+                                <button class="btn btn-primary" id="semantic-search-btn">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="search-results-list" id="search-results-container">
+                                <div class="empty-state">
+                                    <i class="fa-solid fa-database"></i>
+                                    <p>Results of cosine similarity vector search will populate here, displaying matched text chunks and relevance percentages.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Chat interface -->
+                    <div class="chat-console-panel">
+                        <div class="glass-card fill-height flex-column">
+                            <div class="chat-messages-container" id="chat-messages-box">
+                                <div class="chat-msg assistant">
+                                    <div class="msg-avatar">
+                                        <i class="fa-solid fa-brain-circuit"></i>
+                                    </div>
+                                    <div class="msg-content">
+                                        <p>Hello! I am your MemoryVerse AI Assistant. Ask me anything about your digital footprint. For example:</p>
+                                        <ul>
+                                            <li><a href="#" class="suggested-query">Show my Python certifications and skills.</a></li>
+                                            <li><a href="#" class="suggested-query">Where did I intern and what did I build there?</a></li>
+                                            <li><a href="#" class="suggested-query">Explain my MemoryVerse AI project.</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-input-bar">
+                                <input type="text" id="chat-input" placeholder="Ask about certificates, projects, skills, or career path...">
+                                <button class="btn btn-secondary" id="voice-assist-btn" title="Start Realtime Voice Assistant">
+                                    <i class="fa-solid fa-microphone"></i>
+                                </button>
+                                <button class="btn btn-primary" id="chat-send-btn">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
