@@ -78,6 +78,10 @@ vector_db = SimpleVectorDB()
 MOCK_DOCUMENTS = [
     {
         "filename": "Alex_Dev_Resume.txt",
+        "category": "Academics",
+        "year": 2026,
+        "organization": "Woolworth Institute of Technology",
+        "skills": ["Python", "JavaScript", "React", "FastAPI", "SQL", "Git", "Docker", "Machine Learning", "NLP", "RAG", "Vector Databases"],
         "text": """Alex Dev
 Email: alex.dev@example.com
 Education: Woolworth Institute of Technology, B.S. in Computer Science (Graduation Year: 2026). GPA: 3.9/4.0.
@@ -88,6 +92,10 @@ Certifications: Python Core Programming Certification from Coursera (2023)."""
     },
     {
         "filename": "Google_Internship_Letter.txt",
+        "category": "Internships",
+        "year": 2025,
+        "organization": "Google LLC",
+        "skills": ["Python", "FastAPI", "Vector Databases", "RAG"],
         "text": """Google LLC - Internship Completion Certificate
 Date: August 25, 2025
 To Whom It May Concern,
@@ -99,6 +107,10 @@ Applied AI Team Lead, Google"""
     },
     {
         "filename": "MemoryVerse_AI_Project_Report.txt",
+        "category": "Projects",
+        "year": 2026,
+        "organization": "Personal Project",
+        "skills": ["React", "FastAPI", "CSS", "NLP"],
         "text": """MemoryVerse AI - Project System Report (2026)
 GitHub Repository: github.com/alexdev/memoryverse-ai
 Abstract: 
@@ -114,6 +126,10 @@ Developed by: Alex Dev in 2026."""
     },
     {
         "filename": "Coursera_Python_Certification.txt",
+        "category": "Certifications",
+        "year": 2023,
+        "organization": "University of Michigan / Coursera",
+        "skills": ["Python", "Pandas", "NumPy"],
         "text": """Coursera Certification of Course Completion
 Course: Python Core Programming & Data Analysis
 Issued to: Alex Dev
@@ -123,6 +139,10 @@ This certification verifies that Alex Dev has completed the core curriculum in P
     },
     {
         "filename": "Hackathon_Winner_Certificate.txt",
+        "category": "Achievements",
+        "year": 2024,
+        "organization": "Woolworth Institute",
+        "skills": ["TensorFlow", "Deep Learning"],
         "text": """Woolworth Hackathon '24 - First Place Award
 This certificate of achievement is awarded to Alex Dev and Team NeuralNet for securing 1st Place in the Woolworth Institute of Technology Hackathon held in October 2024.
 Project: Developed 'HealthAI', a deep learning model running in TensorFlow for predictive analysis of patient checkups.
@@ -163,17 +183,14 @@ def load_db():
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(doc_info["text"])
             
-        category = categorize_document(doc_info["text"], filename)
-        meta = extract_metadata(doc_info["text"], filename, category)
-        
         document_registry[doc_id] = {
             "id": doc_id,
             "filename": filename,
             "title": filename.rsplit('.', 1)[0].replace('_', ' ').title(),
-            "category": category,
-            "year": meta.get("year", 2026),
-            "organization": meta.get("organization", "Unknown"),
-            "skills": meta.get("skills", []),
+            "category": doc_info["category"],
+            "year": doc_info["year"],
+            "organization": doc_info["organization"],
+            "skills": doc_info["skills"],
             "size": len(doc_info["text"].encode('utf-8'))
         }
         
