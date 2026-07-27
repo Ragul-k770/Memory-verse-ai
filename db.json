@@ -83,5 +83,31 @@
             "Deep Learning"
         ],
         "size": 411
+    },
+    "63dcfae7-62c0-49cc-8658-0391d3513b43": {
+        "id": "63dcfae7-62c0-49cc-8658-0391d3513b43",
+        "filename": "63dcfae7-62c0-49cc-8658-0391d3513b43_Fake_Social_Media_Detection_Report (2).docx",
+        "title": "Fake Social Media Detection Report (2)",
+        "category": "Projects",
+        "year": 2026,
+        "organization": "NAVEEN KUMAR P",
+        "skills": [
+            "Python",
+            "TypeScript",
+            "React",
+            "FastAPI",
+            "SQL",
+            "Git",
+            "Machine Learning",
+            "NumPy",
+            "Pandas",
+            "RAG",
+            "CSS",
+            "REST",
+            "API",
+            "Deep Learning",
+            "LLM"
+        ],
+        "size": 3795726
     }
 }
